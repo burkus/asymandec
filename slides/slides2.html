@@ -1,0 +1,42 @@
+<section>
+  <h3>Mathematical Groups</h3>
+  <p>Collection of numbers upon which a binary operation is defined</p>
+  <p>Operation must satisfy:</p>
+  <ul>
+    <li>Group must be closed under it</li>
+    <li>Associativity</li>
+    <li>Identity element (0)</li>
+    <li>Every element has an inverse</li>
+  </ul>
+</section>
+<section>
+  <h3>Abelian Groups</h3>
+  <p>Same as a normal group, with the addition of commutativity</p>
+  <p>The set of integers from a group</p>
+</section>
+<section>
+  <h3>Elgamal (1985)</h3>
+  <p>Asymmetric, but much closer to Diffie-Hellman than RSA</p>
+  <p>Trap door is DHP</p>
+  <p>Keys are ephemeral</p>
+  <p>Uses a subgroup q of the prime field p</p>
+  <p>Reusable</p>
+</section>
+<section>
+  <pre><code data-trim data-noescape>
+p = 809 # prime field
+q = 101 # subgroup
+h = 2
+g = pow(h, (p - 1) // q, p) # generator of q, has order q
+x = randrange(1, q)
+y = pow(g, x, p)
+def enc(m):
+    k = randrange(2, q)
+    c1 = pow(g, k, p)
+    c2 = m * pow(y, k, p)
+    return (c1, c2)
+def dec(ct):
+    c1, c2 = ct
+    return c2 // pow(c1, x, p)
+  </code></pre>
+</section>

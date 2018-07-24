@@ -1,0 +1,2 @@
+all:
+	./concat.py 

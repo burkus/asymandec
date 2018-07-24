@@ -1,0 +1,70 @@
+<section>
+  <h1>Asymmetric Cryptography and Elliptic Curves</h1>
+</section>
+<section>
+  <h3>Theoretical Security</h3>
+  <p>Shannon's Maxim</p>
+  <p>The One Time Pad</p>
+  <p>Pre-Shared Keys</p>
+</section>
+<section>
+  <h3>Imperfect Security</h3>
+  <p>Theoretically breakable but practically impossible</p>
+  <p>Intractable problems</p>
+  <p>One way functions</p>
+</section>
+<section>
+  <img src="./img/Diffie-Hellman-Meme.jpg" alt="">
+</section>
+<section>
+  <h3>Diffie-Hellman Key Exchange (1976)</h3>
+  <p>Securely exchange key over an untrusted channel for the first time ever *</p>
+  <p>No pre-shared keys</p>
+  <p>Disposable</p>
+  <small>* The British did it in 1969 secretly</small>
+</section>
+<section>
+  <pre><code data-trim data-noescape>
+p = someprime(2 ** 3072) # publicly known
+g = primitive_root(p) # publicly known
+a = randrange(2 ** 256) # known only to Alice
+b = randrange(2 ** 256) # known only to Bob
+A = pow(g, a, p) # Alice's public key
+B = pow(g, b, p) # Bob's public key
+shared_secret_bob = pow(A, b, p)
+shared_secret_alice = pow(B, a, p)
+  </code></pre>
+</section>
+<section>
+  <h3>RSA (1977)</h3>
+  <p>New trap door function</p>
+  <p>Moved on from Discrete Logarithm Problem (DLP)</p>
+  <p>Now focused on intractability of factoring</p>
+  <p>Reusable</p>
+</section>
+<section>
+  <pre><code data-trim data-noescape>
+p = someprime(2 ** 2048)
+q = someprime(2 ** 2048)
+n = p * q # composite modulus
+phi = (p - 1) * (q - 1) # phi of a prime p is p - 1
+public_key = 65537 # small prime for fast encryption
+private_key = inverse(public_key, phi) # modular inverse
+encryption = lambda m: pow(m, public_key, n)
+decryption = lambda c: pow(c, private_key, n)
+  </code></pre>
+</section>
+<section>
+  <p>Same domain parameters as previous slide</p>
+  <p>RSA digital signatures</p>
+  <pre><code data-trim data-noescape>
+hash = someAwesomeHashFunction
+h = hash(document)
+signature = pow(h, private_key, n)
+
+def verify(signature, document):
+    h = hash(document)
+    h' = pow(signature, public_key, n)
+    return h == h'
+  </code></pre>
+</section>
