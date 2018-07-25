@@ -1,2 +1,2 @@
 all:
-	./concat.py 
+	./concat.py; mv concat.html index.html

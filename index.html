@@ -7,7 +7,7 @@
 		<title>ECC</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/moon.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -44,60 +44,172 @@
 </section>
 <section>
   <h3>Diffie-Hellman Key Exchange (1976)</h3>
-  <p>Securely exchange key over an untrusted channel for the first time ever</p>
+  <p>Securely exchange key over an untrusted channel for the first time ever *</p>
   <p>No pre-shared keys</p>
+  <small>* The British did it in 1969 secretly</small>
+</section>
+<section>
+  <h3>Discrete Logarithm Problem (DLP)</h3>
+  <p>Diffie-Hellman problem:</p>
+  <p>Given a public diffie-hellman tuple (g, p, A, B), solve for exponents</p>
+  <p>Intractable (or so it seems...)</p>
 </section>
 <section>
   <pre><code data-trim data-noescape>
-keysize = 2 ** 3072
-g = randrange(keysize) # publicly known
-p = someprime(keysize) # publicly known
-a = randrange(keysize) # known only to Alice
-b = randrange(keysize) # known only to Bob
-A = g ** a % p # Alice's public key
-B = g ** b % p # Bob's public key
-shared_secret = A ** b % p
+p = someprime(2 ** 3072) # publicly known
+g = primitive_root(p) # publicly known
+a = randrange(2 ** 256) # known only to Alice
+b = randrange(2 ** 256) # known only to Bob
+A = pow(g, a, p) # Alice's public key
+B = pow(g, b, p) # Bob's public key
+shared_secret_bob = pow(A, b, p)
+shared_secret_alice = pow(B, a, p)
   </code></pre>
 </section>
 <section>
   <h3>RSA (1977)</h3>
   <p>New trap door function</p>
-  <p>Moved on from Discrete Logarithm Problem (DLP)</p>
+  <p>Not using DLP</p>
   <p>Now focused on intractability of factoring</p>
 </section>
 <section>
-  <pre><code data-trim-noescape>
-p = someprime(keysize / 2)
-q = someprime(keysize / 2)
+  <pre><code data-trim data-noescape>
+p = someprime(2 ** 2048)
+q = someprime(2 ** 2048)
 n = p * q # composite modulus
 phi = (p - 1) * (q - 1) # phi of a prime p is p - 1
-public_key = 65537 # prime numbers are always invertible
+public_key = 65537 # small prime for fast encryption
 private_key = inverse(public_key, phi) # modular inverse
 encryption = lambda m: pow(m, public_key, n)
 decryption = lambda c: pow(c, private_key, n)
   </code></pre>
 </section>
 <section>
-  <h3>Elgamal (1985)</h3>
-  <p>Asymmetric, but much closer to Diffie-Hellman than RSA</p>
-  <p>Trap door is DHP</p>
+  <p>Same domain parameters as previous slide</p>
+  <p>RSA digital signatures</p>
+  <pre><code data-trim data-noescape>
+hash = someAwesomeHashFunction
+h = hash(document)
+signature = pow(h, private_key, n)
+
+def verify(signature, document):
+    h = hash(document)
+    h' = pow(signature, public_key, n)
+    return h == h'
+  </code></pre>
 </section>
 <section>
-  <pre><code data-trim-noescape>
-p = 809 # public
-q = 101 # public
-g = randrange(1, p) # public
-x = randrange(1, p) # private key
-y = pow(g, x, p) # public key
-def encrypt(m):
-    k = randrange(1, q)
+  <h3>ECC Vs. RSA</h3>
+</section>
+<section>
+  <h3>Performance</h3>
+</section>
+<section>
+  <h3>Long Term Security</h3>
+</section>
+<section>
+  <h3>Security Against Quantum Computing</h3>
+</section>
+<section>
+  <h3>Bitcoin?</h3>
+</section>
+<section>
+  <h3>Elgamal (1985)</h3>
+  <p>Extention of diffie-hellman</p>
+  <p>Relies on DHP</p>
+  <p>Uses a key tuple(x, k) where k is ephemeral</p>
+  <p>Uses a subgroup q of the prime field p</p>
+</section>
+<section>
+  <pre><code data-trim data-noescape>
+p = 809
+q = 101
+g = randrange(2, q)
+x = randrange(1, q)
+y = pow(g, x, p)
+def enc(m):
+    k = randrange(2, q)
     c1 = pow(g, k, p)
     c2 = m * pow(y, k, p)
     return (c1, c2)
-def decrypt(ct):
+def dec(ct):
     c1, c2 = ct
     return c2 // pow(c1, x, p)
   </code></pre>
+</section>
+<section>
+  <h3>Mathematical Groups</h3>
+  <p>Collection of numbers upon which a binary operation is defined</p>
+  <p>Operation must satisfy:</p>
+  <ul>
+    <li>Group closed under operation</li>
+    <li>Associativity</li>
+    <li>Identity element (0)</li>
+    <li>Every element has an inverse</li>
+  </ul>
+</section>
+<section>
+  <h3>Abelian Groups</h3>
+  <p>Superset of normal group, with the addition of commutativity</p>
+</section>
+<section>
+  <h3>Elliptic Curves (EC)</h3>
+  <p>Another esoteric field made surprisingly practical</p>
+  <p>ECs are symmetric about the x-axis, meaning every element has an inverse</p>
+  <p>Identity element is a point at infinity (because of Weierstrass form)</p>
+  <p>Operations can be defined algebraicly as well as geometrically</p>
+</section>
+<section>
+  <h3>Defining Addition on EC</h3>
+  <img src="./img/point-addition.png" width="400" height="400">
+</section>
+<section>
+  <h3>Scalar Multiplication</h3>
+  <p>n * P is P + P repeated n times</p>
+  <p>Can be implemeneted using same technique as modular exponentiation</p>
+  <p>Runtime is the number of bits n has</p>
+</section>
+<section>
+  <h3>EC Diffie-Hellman Problem</h3>
+  <p>Given a point Q and a point P</p>
+  <p>find an integer k so that P * k = Q</p>
+</section>
+<section>
+  <h3>ECDH</h3>
+  <pre><code data-trim data-noescape>
+p = someprime(2 ** 256) # public
+E = someEllipticCurve # public
+P = E.somepoint() # public
+n = order(P, E) # must be prime
+bob_secret = randrange(1, n) # private
+alice_secret = randrange(1, n) # private
+alice_public_key = alice_secret * P
+bob_public_key = bob_secret * P
+shared_secret_bob = alice_public_key * bob_secret
+shared_secret_alice = bob_public_key * alice_secret
+  </code></pre>
+</section>
+<section>
+  <h3>ECElgamal</h3>
+  <pre><code data-trim data-noescape>
+p = someprime(2 ** 256) # public
+E = someEllipticCurve # public
+P = E.somepoint() # public
+n = order(P, E) # must be prime
+x = randrange(1, n) # private key
+Q = x * P # public key
+def enc(m):
+    k = randrange(1, n) # private ephemeral key
+    C1 = k * P
+    C2 = M + k * Q
+    return (C1, C2)
+def dec(ct):
+    C1, C2 = ct
+    return C2 - x * C1
+  </code></pre>
+</section>
+<section>
+  <h3>ECDSA</h3>
 </section>
 
 			</div>

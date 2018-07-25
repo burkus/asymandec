@@ -1,10 +1,12 @@
 from random import randrange
 p = 809
 q = 101
-h = 2
-g = pow(h, (p - 1) // q, p)
+g = randrange(2, q)
 x = randrange(1, q)
 y = pow(g, x, p)
+assert pow(g, 2, p) != 1
+assert pow(g, q, p) != 1
+assert pow(g, (p - 1) // q, p) != 1
 
 def enc(m):
     k = randrange(2, q)

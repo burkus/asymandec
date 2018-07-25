@@ -1,33 +1,15 @@
 <section>
-  <h3>Mathematical Groups</h3>
-  <p>Collection of numbers upon which a binary operation is defined</p>
-  <p>Operation must satisfy:</p>
-  <ul>
-    <li>Group must be closed under it</li>
-    <li>Associativity</li>
-    <li>Identity element (0)</li>
-    <li>Every element has an inverse</li>
-  </ul>
-</section>
-<section>
-  <h3>Abelian Groups</h3>
-  <p>Same as a normal group, with the addition of commutativity</p>
-  <p>The set of integers from a group</p>
-</section>
-<section>
   <h3>Elgamal (1985)</h3>
-  <p>Asymmetric, but much closer to Diffie-Hellman than RSA</p>
-  <p>Trap door is DHP</p>
-  <p>Keys are ephemeral</p>
+  <p>Extention of diffie-hellman</p>
+  <p>Relies on DHP</p>
+  <p>Uses a key tuple(x, k) where k is ephemeral</p>
   <p>Uses a subgroup q of the prime field p</p>
-  <p>Reusable</p>
 </section>
 <section>
   <pre><code data-trim data-noescape>
-p = 809 # prime field
-q = 101 # subgroup
-h = 2
-g = pow(h, (p - 1) // q, p) # generator of q, has order q
+p = 809
+q = 101
+g = randrange(2, q)
 x = randrange(1, q)
 y = pow(g, x, p)
 def enc(m):
@@ -39,4 +21,78 @@ def dec(ct):
     c1, c2 = ct
     return c2 // pow(c1, x, p)
   </code></pre>
+</section>
+<section>
+  <h3>Mathematical Groups</h3>
+  <p>Collection of numbers upon which a binary operation is defined</p>
+  <p>Operation must satisfy:</p>
+  <ul>
+    <li>Group closed under operation</li>
+    <li>Associativity</li>
+    <li>Identity element (0)</li>
+    <li>Every element has an inverse</li>
+  </ul>
+</section>
+<section>
+  <h3>Abelian Groups</h3>
+  <p>Superset of normal group, with the addition of commutativity</p>
+</section>
+<section>
+  <h3>Elliptic Curves (EC)</h3>
+  <p>Another esoteric field made surprisingly practical</p>
+  <p>ECs are symmetric about the x-axis, meaning every element has an inverse</p>
+  <p>Identity element is a point at infinity (because of Weierstrass form)</p>
+  <p>Operations can be defined algebraicly as well as geometrically</p>
+</section>
+<section>
+  <h3>Defining Addition on EC</h3>
+  <img src="./img/point-addition.png" width="400" height="400">
+</section>
+<section>
+  <h3>Scalar Multiplication</h3>
+  <p>n * P is P + P repeated n times</p>
+  <p>Can be implemeneted using same technique as modular exponentiation</p>
+  <p>Runtime is the number of bits n has</p>
+</section>
+<section>
+  <h3>EC Diffie-Hellman Problem</h3>
+  <p>Given a point Q and a point P</p>
+  <p>find an integer k so that P * k = Q</p>
+</section>
+<section>
+  <h3>ECDH</h3>
+  <pre><code data-trim data-noescape>
+p = someprime(2 ** 256) # public
+E = someEllipticCurve # public
+P = E.somepoint() # public
+n = order(P, E) # must be prime
+bob_secret = randrange(1, n) # private
+alice_secret = randrange(1, n) # private
+alice_public_key = alice_secret * P
+bob_public_key = bob_secret * P
+shared_secret_bob = alice_public_key * bob_secret
+shared_secret_alice = bob_public_key * alice_secret
+  </code></pre>
+</section>
+<section>
+  <h3>ECElgamal</h3>
+  <pre><code data-trim data-noescape>
+p = someprime(2 ** 256) # public
+E = someEllipticCurve # public
+P = E.somepoint() # public
+n = order(P, E) # must be prime
+x = randrange(1, n) # private key
+Q = x * P # public key
+def enc(m):
+    k = randrange(1, n) # private ephemeral key
+    C1 = k * P
+    C2 = M + k * Q
+    return (C1, C2)
+def dec(ct):
+    C1, C2 = ct
+    return C2 - x * C1
+  </code></pre>
+</section>
+<section>
+  <h3>ECDSA</h3>
 </section>

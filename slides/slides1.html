@@ -20,8 +20,13 @@
   <h3>Diffie-Hellman Key Exchange (1976)</h3>
   <p>Securely exchange key over an untrusted channel for the first time ever *</p>
   <p>No pre-shared keys</p>
-  <p>Disposable</p>
   <small>* The British did it in 1969 secretly</small>
+</section>
+<section>
+  <h3>Discrete Logarithm Problem (DLP)</h3>
+  <p>Diffie-Hellman problem:</p>
+  <p>Given a public diffie-hellman tuple (g, p, A, B), solve for exponents</p>
+  <p>Intractable (or so it seems...)</p>
 </section>
 <section>
   <pre><code data-trim data-noescape>
@@ -38,9 +43,8 @@ shared_secret_alice = pow(B, a, p)
 <section>
   <h3>RSA (1977)</h3>
   <p>New trap door function</p>
-  <p>Moved on from Discrete Logarithm Problem (DLP)</p>
+  <p>Not using DLP</p>
   <p>Now focused on intractability of factoring</p>
-  <p>Reusable</p>
 </section>
 <section>
   <pre><code data-trim data-noescape>
