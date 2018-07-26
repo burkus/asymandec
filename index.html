@@ -160,16 +160,28 @@ def dec(ct):
   <p>find an integer k so that P * k = Q</p>
 </section>
 <section>
+  <h3>Domain Parameters</h3>
+  <p>SECG has recommended curves and parameters</p>
+  <p>Time for copy pasta</p>
+</section>
+<section>
+  <h3>secp256k1</h3>
+  <p>The Bitcoin curve</p>
+  <p>Generally believed to be free of NSA meddling</p>
+  <p>Faster than other curves due to it's construction</p>
+</section>
+<section>
   <h3>ECDH</h3>
   <pre><code data-trim data-noescape>
-p = someprime(2 ** 256) # public
-E = someEllipticCurve # public
-P = E.somepoint() # public
-n = order(P, E) # must be prime
-bob_secret = randrange(1, n) # private
-alice_secret = randrange(1, n) # private
-alice_public_key = alice_secret * P
-bob_public_key = bob_secret * P
+curve = curves["secp256k1"]
+order = curve.n
+Point = curve.g
+bob_secret = randrange(1, order) # private
+alice_secret = randrange(1, order) # private
+
+alice_public_key = alice_secret * Point
+bob_public_key = bob_secret * Point
+
 shared_secret_bob = alice_public_key * bob_secret
 shared_secret_alice = bob_public_key * alice_secret
   </code></pre>
@@ -177,20 +189,20 @@ shared_secret_alice = bob_public_key * alice_secret
 <section>
   <h3>ECElgamal</h3>
   <pre><code data-trim data-noescape>
-p = someprime(2 ** 256) # public
-E = someEllipticCurve # public
-P = E.somepoint() # public
-n = order(P, E) # must be prime
-x = randrange(1, n) # private key
-Q = x * P # public key
+curve = curves["secp256k1"] # public
+Point = curve.g # public
+order = curve.n # public
+x = randrange(1, order) # private key
+Q = x * Point # public key
 def enc(m):
-    k = randrange(1, n) # private ephemeral key
-    C1 = k * P
-    C2 = M + k * Q
-    return (C1, C2)
+    M = translateToCurve(m, curve) # place message on curve
+    k = randrange(1, order) # private ephemeral key
+    C1 = k * Point # public ephemeral key
+    C2 = M + k * Q # encypted message
+    return (C1, C2) # ciphertext pairing
 def dec(ct):
     C1, C2 = ct
-    return C2 - x * C1
+    return C2 - x * C1 # subtract keys from ciphertext to get M
   </code></pre>
 </section>
 <section>
