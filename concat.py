@@ -7,7 +7,7 @@ slidesPath = os.getcwd() + "/slides"
 slideFiles = os.listdir(slidesPath)
 
 slides = ""
-for file in slideFiles:
+for file in sorted(slideFiles):
     if "posix" in os.name:
         filePath = slidesPath + '/' + file
     else:
