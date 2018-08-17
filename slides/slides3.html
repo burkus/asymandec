@@ -1,15 +1,49 @@
 <section>
-  <h3>ECC Vs. RSA</h3>
+  <img src="./img/VerifyPerformance.png" alt="">
 </section>
 <section>
-  <h3>Performance</h3>
+  <img src="./img/SignPerformance.png" alt="">
+</section>
+<section>
+  <img src="./img/PrimeVerifyPerformance.png" alt="">
+</section>
+<section>
+  <h3>Why is ECC so much faster?</h3>
+  <p>Smaller numbers, not faster operations</p>
+  <p>NFS has eroded RSA's strength</p>
+  <p>RSA still has fastest verification</p>
+  <p>In a mobile world, ECC will win</p>
 </section>
 <section>
   <h3>Long Term Security</h3>
+  <p>At 256 bits, one would need a Dyson sphere occupying space around a supernova
+    to get enough energy to test every possible key</p>
+    <p>"...brute-force attacks against 256-bit keys will be infeasible until computers are built
+      from something other than matter and occupy something other than space."</p>
+    <small>-Bruce Schneier</small>
+</section>
+<section>
+  <h3>Achieving 256 bits of Security</h3>
+  <ul>
+    <li>RSA: ~15000 bits</li>
+    <li>ECC: ~521 bits</li>
+  </ul>
+  <p>
+    <img src="./img/thinking.gif" alt="">
+  </p>
 </section>
 <section>
   <h3>Security Against Quantum Computing</h3>
+  <p>Number of Qubits required for Shor's algorithm is 2n for RSA and 6n for ECC</p>
+  <p>where n is the modulus for RSA, and n is the order of the group on the curve for ECC</p>
+  <p>Ironically, RSA will be more secure in a Quantum future since n is much larger in RSA</p>
 </section>
 <section>
-  <h3>Bitcoin?</h3>
+  <h3>Some Things to Keep You Up At Night</h3>
+  <ul>
+    <li>There have only ever been 407 number theorists in all of history</li>
+    <li>There is no proof that any of these problems are intractable</li>
+    <li>What happened to RSA could happen to ECC</li>
+    <li>Santa isn't real</li>
+  </ul>
 </section>

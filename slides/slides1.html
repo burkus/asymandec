@@ -14,6 +14,12 @@
   <p>One way functions</p>
 </section>
 <section>
+  <h3>Intuitive Security for Symmetric Keys</h3>
+  <p>Pool: enough energy to boil an olympic size pool (~65 bits)</p>
+  <p>Global: enough energy to boil all water on Earth (~114 bits)</p>
+  <p>Universal: about as much mass-energy as there is in the observed universe (~256 bits)</p>
+</section>
+<section>
   <img src="./img/Diffie-Hellman-Meme.jpg" alt="">
 </section>
 <section>
@@ -30,6 +36,19 @@
 </section>
 <section>
   <pre><code data-trim data-noescape>
+a = 3
+b = 2
+c = pow(a, b) # 9
+log(c, a) == 2 # true; logarithm of c with base a
+  </code></pre>
+</section>
+<section>
+  <h3>log Only Takes Up To 2 Arguments</h3>
+  <p>There is no efficient discrete logarithm function</p>
+  <p>Instead, a few algorithms exist with exponential runtimes for factoring or brute forcing</p>
+</section>
+<section>
+  <pre><code data-trim data-noescape>
 p = someprime(2 ** 3072) # publicly known
 g = primitive_root(p) # publicly known
 a = randrange(2 ** 256) # known only to Alice
@@ -43,8 +62,8 @@ shared_secret_alice = pow(B, a, p)
 <section>
   <h3>RSA (1977)</h3>
   <p>New trap door function</p>
-  <p>Not using DLP</p>
-  <p>Now focused on intractability of factoring</p>
+  <p>Focused on intractability of factoring</p>
+  <p>Vulnerable to General Number Field Sieve (NFS)</p>
 </section>
 <section>
   <pre><code data-trim data-noescape>
@@ -52,8 +71,8 @@ p = someprime(2 ** 2048)
 q = someprime(2 ** 2048)
 n = p * q # composite modulus
 phi = (p - 1) * (q - 1) # phi of a prime p is p - 1
-public_key = 65537 # small prime for fast encryption
-private_key = inverse(public_key, phi) # modular inverse
+public_key = 65537 # small prime for fast encryption/verification
+private_key = mod_inv(public_key, phi) # modular inverse, very big number
 encryption = lambda m: pow(m, public_key, n)
 decryption = lambda c: pow(c, private_key, n)
   </code></pre>
@@ -62,7 +81,6 @@ decryption = lambda c: pow(c, private_key, n)
   <p>Same domain parameters as previous slide</p>
   <p>RSA digital signatures</p>
   <pre><code data-trim data-noescape>
-hash = someAwesomeHashFunction
 h = hash(document)
 signature = pow(h, private_key, n)
 
