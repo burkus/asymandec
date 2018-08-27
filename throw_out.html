@@ -1,0 +1,81 @@
+<section>
+  <h3>Elgamal (1985)</h3>
+  <p>Extension of diffie-hellman</p>
+  <p>Relies on DHP</p>
+  <p>Uses a key tuple(x, k) where k is ephemeral</p>
+  <p>Uses a subgroup q of the prime field p</p>
+</section>
+<section>
+  <pre><code data-trim data-noescape>
+p = 809 # prime field
+q = 101 # subgroup prime order, factor of p - 1
+g = randrange(2, q) # generator of subgroup
+x = randrange(1, q) # private key
+y = pow(g, x, p) # public key
+def enc(m):
+    k = randrange(2, q) # private ephemeral key
+    c1 = pow(g, k, p) # public ephemeral key
+    c2 = m * pow(y, k, p)
+    return (c1, c2)
+def dec(ct):
+    c1, c2 = ct
+    return c2 // pow(c1, x, p)
+  </code></pre>
+</section>
+<section>
+  <h3>Defining Addition on EC</h3>
+  <img src="./img/point-addition.png" width="400" height="400">
+  <p><small>Credit: Andrea Corbellini</small></p>
+</section>
+<section>
+  <h3>ECDSA</h3>
+  <pre><code data-trim data-noescape>
+curve = curves["secp256k1"] # public
+order = curve.n
+G = curve.g
+private_key = randrange(1, n)
+public_key = private_key * G
+private_ephemeral_key = randrange(1, n)
+r = (private_ephemeral_key * G).x % order
+h = hash(document)
+s = mod_inv(private_ephemeral_key, n) * (h + r * private_key)
+signature = (r, s)
+def verify(r, s, document)
+    u1 = mod_inv(s, n) * hash(document)
+    u2 = mod_inv(s, n) * r
+    P = u1 * G + u2 * public_key
+    return r == P.x % n
+  </code></pre>
+</section>
+<section>
+  <h3>ECElgamal</h3>
+  <pre><code data-trim data-noescape>
+curve = curves["secp256k1"] # public
+G = curve.g # public
+order = curve.n # public
+x = randrange(1, order) # private key
+Q = x * G # public key
+def enc(m):
+    M = translateToCurve(m, curve) # place message on curve
+    k = randrange(1, order) # private ephemeral key
+    C1 = k * G # public ephemeral key
+    C2 = M + k * Q # encypted message
+    return (C1, C2) # ciphertext pairing
+def dec(ct):
+    C1, C2 = ct
+    return C2 - x * C1 # subtract keys from ciphertext to get M
+  </code></pre>
+</section>
+<section>
+  <p>Same domain parameters as previous slide</p>
+  <p>RSA digital signatures</p>
+  <pre><code data-trim data-noescape>
+h = hash(document)
+signature = pow(h, private_key, n)
+
+def verify(signature, document):
+    h = hash(document)
+    h' = pow(signature, public_key, n)
+    return h == h'
+  </code></pre>
+</section>

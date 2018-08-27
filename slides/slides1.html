@@ -2,6 +2,27 @@
   <h1>Asymmetric Cryptography and Elliptic Curves</h1>
 </section>
 <section>
+  <h3>Two Types of Encryption</h3>
+  <p>Symmetric</p>
+  <ul>
+    <li>One key</li>
+    <li>Very fast</li>
+    <li>Encrypt all the things</li>
+  </ul>
+  <p>Asymmetric</p>
+  <ul>
+    <li>Two Keys</li>
+    <li>Slow</li>
+    <li>Symmetric key exchange</li>
+    <li>Document signing</li>
+  </ul>
+</section>
+<section>
+  <h3>Some Terms</h3>
+  <p>Keyspace: number of possible keys</p>
+  <p>Hash: some cryptographicly secure hash function</p>
+</section>
+<section>
   <h3>Theoretical Security</h3>
   <p>Shannon's Maxim</p>
   <p>The One Time Pad</p>
@@ -14,43 +35,60 @@
   <p>One way functions</p>
 </section>
 <section>
-  <h3>Intuitive Security for Symmetric Keys</h3>
-  <p>Pool: enough energy to boil an olympic size pool (~65 bits)</p>
-  <p>Global: enough energy to boil all water on Earth (~114 bits)</p>
-  <p>Universal: about as much mass-energy as there is in the observed universe (~256 bits)</p>
-</section>
-<section>
   <img src="./img/Diffie-Hellman-Meme.jpg" alt="">
 </section>
 <section>
   <h3>Diffie-Hellman Key Exchange (1976)</h3>
-  <p>Securely exchange key over an untrusted channel for the first time ever *</p>
+  <p>Securely exchange keys over an untrusted channel for the first time ever *</p>
   <p>No pre-shared keys</p>
   <small>* The British did it in 1969 secretly</small>
 </section>
 <section>
-  <h3>Discrete Logarithm Problem (DLP)</h3>
-  <p>Diffie-Hellman problem:</p>
-  <p>Given a public diffie-hellman tuple (g, p, A, B), solve for exponents</p>
-  <p>Intractable (or so it seems...)</p>
+  <h3>Modular Arithmetic (Remainder division)</h3>
+  <p>Like Clockwork</p>
+  <p>denoted with % or mod</p>
+  <p>12 + 4 mod 12 = 4</p>
+  <p>10 + 1 mod 12 = 11</p>
+  <p>Lets us create finite cyclic spaces</p>
+</section>
+<section>
+  <h3>Mathematical Groups</h3>
+  <p>Collection of numbers upon which a binary operation is defined</p>
+  <p>Operation must satisfy:</p>
+  <ul>
+    <li>Group closure</li>
+    <li>Associativity</li>
+    <li>Identity element (0 or 1)</li>
+    <li>Every element has an inverse</li>
+    <li>Groups can be commutative (abelian)</li>
+    <li>We want commutative groups</li>
+  </ul>
+</section>
+<section>
+  <h3>Some Group Terms</h3>
+  <p>Order: number of numbers in the group</p>
+  <p>Generator: number in the group capable of generating the entire
+    group using group operation</p>
+</section>
+<section>
+  <h3>Finite Fields</h3>
+  <p>Easy to make: mod by some prime p</p>
+  <p>Elements are between 0 and p</p>
+  <p>Union of 3 groups under p, (*, +, -)</p>
+  <p>Provides discrete space for our operations</p>
+</section>
+<section>
+  <h3>Stuff We Need for Diffie-Hellman</h3>
+  <ul>
+    <li>Prime Modulus - create our finite field</li>
+    <li>Group generator - serves as our base</li>
+    <li>Two 256 bit secret keys, one for each party</li>
+  </ul>
 </section>
 <section>
   <pre><code data-trim data-noescape>
-a = 3
-b = 2
-c = pow(a, b) # 9
-log(c, a) == 2 # true; logarithm of c with base a
-  </code></pre>
-</section>
-<section>
-  <h3>log Only Takes Up To 2 Arguments</h3>
-  <p>There is no efficient discrete logarithm function</p>
-  <p>Instead, a few algorithms exist with exponential runtimes for factoring or brute forcing</p>
-</section>
-<section>
-  <pre><code data-trim data-noescape>
-p = someprime(2 ** 3072) # publicly known
-g = primitive_root(p) # publicly known
+p = someprime(2 ** 3072) # public prime modulus
+g = primitive_root(p) # public base
 a = randrange(2 ** 256) # known only to Alice
 b = randrange(2 ** 256) # known only to Bob
 A = pow(g, a, p) # Alice's public key
@@ -60,33 +98,45 @@ shared_secret_alice = pow(B, a, p)
   </code></pre>
 </section>
 <section>
+  <h3>Discrete Logarithm Problem (DLP)</h3>
+  <p>Diffie-Hellman problem:</p>
+  <p>Given a public diffie-hellman tuple (g, p, A, B), solve for exponents a or b</p>
+  <p>Intractable (or so it seems...)</p>
+</section>
+<section>
   <h3>RSA (1977)</h3>
   <p>New trap door function</p>
   <p>Focused on intractability of factoring</p>
-  <p>Vulnerable to General Number Field Sieve (NFS)</p>
+</section>
+<section>
+  <h3>Modular Inverses</h3>
+  <p>We take some non-zero number, a, over a prime field and find some number b,
+    which when multiplied by a equals 1</p>
+  <p>b is the modular multiplicative inverse of a over prime field p</p>
+</section>
+<section>
+  <h3>Phi</h3>
+  <p>We can't take the inverse relative to n, because n is public</p>
+  <p>We need something private based on the secrecy of p and q</p>
+  <p>Phi counts the numbers up to p that are coprime to it</p>
+</section>
+<section>
+  <h3>Stuff We Need for RSA</h3>
+  <ul>
+    <li>two secret large primes, p and q</li>
+    <li>the product of p and q, n</li>
+    <li>phi of n</li>
+  </ul>
 </section>
 <section>
   <pre><code data-trim data-noescape>
 p = someprime(2 ** 2048)
 q = someprime(2 ** 2048)
-n = p * q # composite modulus
+n = p * q # public composite modulus
 phi = (p - 1) * (q - 1) # phi of a prime p is p - 1
 public_key = 65537 # small prime for fast encryption/verification
 private_key = mod_inv(public_key, phi) # modular inverse, very big number
 encryption = lambda m: pow(m, public_key, n)
 decryption = lambda c: pow(c, private_key, n)
-  </code></pre>
-</section>
-<section>
-  <p>Same domain parameters as previous slide</p>
-  <p>RSA digital signatures</p>
-  <pre><code data-trim data-noescape>
-h = hash(document)
-signature = pow(h, private_key, n)
-
-def verify(signature, document):
-    h = hash(document)
-    h' = pow(signature, public_key, n)
-    return h == h'
   </code></pre>
 </section>
